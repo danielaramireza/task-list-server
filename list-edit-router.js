@@ -37,6 +37,38 @@ const validatePOSTRequestInvalid = function (req, res, next) {
 // Registra el middleware en el router
 router.use(validatePOSTRequestInvalid);
 
+// Middleware de validación para solicitudes PUT con el cuerpo vacio
+const validatePUTRequestNoBody = function (req, res, next) {
+  if (req.method === "PUT" && Object.keys(req.body).length === 0) {
+    return res.status(400).send({
+      success: false,
+      content: "El cuerpo de la solicitud debe contener información",
+    });
+  }
+  next();
+};
+
+// Registra el middleware en el router
+router.use(validatePUTRequestNoBody);
+
+// Middleware de validación para solicitudes PUT que tengan información no valida o atributos faltantes para crear las tareas
+const validatePUTRequestInvalid = function (req, res, next) {
+  if (
+    (req.method === "PUT" && "description" in req.body === false) ||
+    (req.method === "PUT" && typeof req.body.description !== "string")
+  ) {
+    return res.status(400).send({
+      success: false,
+      content:
+        "Verifica la informacion enviada en el cuerpo. Recuerda que la descripcion es obligatoria y esta debe ser de tipo 'string'",
+    });
+  }
+  next();
+};
+
+// Registra el middleware en el router
+router.use(validatePUTRequestInvalid);
+
 //Función para retornar el último id
 function retornarUltimoId() {
   const ultimoId = listaTareas.reduce((max, objeto) => {
