@@ -1,0 +1,12 @@
+[
+  { "id": 1, "description": "Hacer el desayuno", "isCompleted": false },
+  { "id": 2, "description": "Ir al supermercado", "isCompleted": true },
+  { "id": 3, "description": "Sacar la basura", "isCompleted": false },
+  { "id": 4, "description": "Lavar la loza", "isCompleted": true },
+  { "id": 5, "description": "Hacer el almuerzo", "isCompleted": false },
+  { "id": 6, "description": "Lavar la ropa", "isCompleted": true },
+  { "id": 7, "description": "Descongelar la carne", "isCompleted": false },
+  { "id": 8, "description": "Lavar el carro", "isCompleted": true },
+  { "id": 9, "description": "Tender la cama", "isCompleted": false },
+  { "id": 10, "description": "Ir a clases de ingles", "isCompleted": false }
+]

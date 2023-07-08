@@ -1,15 +1,13 @@
 const express = require("express");
 const app = express();
 const port = 3000;
+const listViewRouter = require("./list-view-router");
+const listEditRouter = require("./list-edit-router");
+const listaTareas = require("./listaTareas.json");
 
 app.use(express.json());
-
-let listaTareas = [
-  { id: 1, description: "Hacer el desayuno", isCompleted: false },
-  { id: 3, description: "Ir al supermercado", isCompleted: false },
-  { id: 2, description: "Sacar la basura", isCompleted: false },
-  { id: 4, description: "Pasear el perro", isCompleted: false },
-];
+app.use("/tareas", listViewRouter);
+app.use("/tarea", listEditRouter);
 
 app.get("/", (req, res) => {
   res.send({
