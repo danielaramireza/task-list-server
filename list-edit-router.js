@@ -5,6 +5,38 @@ router.use(express.json());
 
 let listaTareas = require("./listaTareas.json");
 
+// Middleware de validación para solicitudes POST con el cuerpo vacio
+const validatePOSTRequestNoBody = function (req, res, next) {
+  if (req.method === "POST" && Object.keys(req.body).length === 0) {
+    return res.status(400).send({
+      success: false,
+      content: "El cuerpo de la solicitud debe contener información",
+    });
+  }
+  next();
+};
+
+// Registra el middleware en el router
+router.use(validatePOSTRequestNoBody);
+
+// Middleware de validación para solicitudes POST que tengan información no valida o atributos faltantes para crear las tareas
+const validatePOSTRequestInvalid = function (req, res, next) {
+  if (
+    (req.method === "POST" && "description" in req.body === false) ||
+    (req.method === "POST" && typeof req.body.description !== "string")
+  ) {
+    return res.status(400).send({
+      success: false,
+      content:
+        "Verifica la informacion enviada en el cuerpo. Recuerda que la descripcion es obligatoria y esta debe ser de tipo 'string'",
+    });
+  }
+  next();
+};
+
+// Registra el middleware en el router
+router.use(validatePOSTRequestInvalid);
+
 //Función para retornar el último id
 function retornarUltimoId() {
   const ultimoId = listaTareas.reduce((max, objeto) => {
