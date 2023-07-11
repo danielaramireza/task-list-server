@@ -17,8 +17,27 @@ const users = [
 ];
 
 app.use(express.json());
-app.use("/tareas", listViewRouter);
-app.use("/tarea", listEditRouter);
+
+function JWTValidation(req, res, next) {
+  const token = req.headers.authorization;
+
+  if (!token || !token.startsWith("Bearer ")) {
+    res.status(401).send({ message: "Invalid token" });
+    return;
+  }
+
+  const dataToken = token.split(" ")[1];
+
+  try {
+    const decodedToken = jwt.verify(dataToken, env.parsed.SECRET_KEY);
+    next();
+  } catch (error) {
+    res.status(401).send({ message: "Invalid token" });
+  }
+}
+
+app.use("/tareas", JWTValidation, listViewRouter);
+app.use("/tarea", JWTValidation, listEditRouter);
 
 app.use(function (req, res, next) {
   switch (req.method) {
@@ -37,7 +56,7 @@ app.use(function (req, res, next) {
   }
 });
 
-app.get("/", (req, res) => {
+app.get("/", JWTValidation, (req, res) => {
   res.send({
     success: true,
     content: listaTareas,
