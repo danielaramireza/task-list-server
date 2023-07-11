@@ -1,6 +1,8 @@
 const express = require("express");
 const app = express();
 const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
+const env = dotenv.config();
 const port = 3000;
 const listViewRouter = require("./list-view-router");
 const listEditRouter = require("./list-edit-router");
@@ -49,7 +51,7 @@ app.post("/login", (req, res) => {
   if (!user) {
     res.status(401).send({ error: "Invalid user name or password" });
   } else {
-    const token = jwt.sign(user, process.env.SECRET_KEY, {
+    const token = jwt.sign(user, env.parsed.SECRET_KEY, {
       algorithm: "HS256",
     });
     res.json({ token });
