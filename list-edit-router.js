@@ -123,7 +123,7 @@ router.delete("/eliminar/:id", (req, res) => {
       content: "La tarea ha sido eliminada",
     });
   } else {
-    res.send({
+    res.status(404).send({
       succes: false,
       content: "La tarea no pudo ser eliminada, verifica el id de la tarea",
     });
@@ -147,7 +147,7 @@ router.put("/actualizar/:id", (req, res) => {
       content: "Su tarea ha sido actualizada correctamente",
     });
   } else {
-    res.send({
+    res.status(404).send({
       success: false,
       content: "No se pudo actualizar la tarea, verifica los datos enviados.",
     });

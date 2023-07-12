@@ -45,7 +45,7 @@ router.get("/:id", (req, res) => {
       content: listaTareas[indice],
     });
   } else {
-    res.send({
+    res.status(404).send({
       succes: false,
       content: "No se encontro la tarea",
     });
