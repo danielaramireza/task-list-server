@@ -6,17 +6,14 @@ const listaTareas = require("./listaTareas.json");
 const paramMiddleware = (req, res, next) => {
   const param = req.params.param;
 
-  switch (param) {
-    case "completas":
-    case "incompletas":
-      next();
-      break;
-
-    default:
-      return res.status(400).send({
-        success: false,
-        content: "Parametro invalido",
-      });
+  if (param == "completas" || param == "incompletas" || parseInt(param) >= 0) {
+    next();
+    return;
+  } else {
+    return res.status(400).send({
+      success: false,
+      content: "Parametro invalido",
+    });
   }
   next();
 };
@@ -35,6 +32,24 @@ router.get("/incompletas", (req, res) => {
     (tarea) => tarea.isCompleted === false
   );
   res.send({ success: true, content: tareasIncompletas });
+});
+
+router.get("/:id", (req, res) => {
+  let id = req.params.id;
+  id = parseInt(id);
+  let indice = listaTareas.findIndex((objeto) => objeto.id === id);
+
+  if (indice >= 0) {
+    res.send({
+      success: true,
+      content: listaTareas[indice],
+    });
+  } else {
+    res.send({
+      succes: false,
+      content: "No se encontro la tarea",
+    });
+  }
 });
 
 module.exports = router;
