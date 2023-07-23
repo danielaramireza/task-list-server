@@ -4,9 +4,12 @@ const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const env = dotenv.config();
 const port = 3000;
+const cors = require("cors");
 const listViewRouter = require("./list-view-router");
 const listEditRouter = require("./list-edit-router");
 const listaTareas = require("./listaTareas.json");
+
+app.use(cors());
 
 const users = [
   { email: "damaral@gmail.com", name: "Daniela" },

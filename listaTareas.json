@@ -1,12 +1,62 @@
 [
-  { "id": 1, "description": "Hacer el desayuno", "isCompleted": false },
-  { "id": 2, "description": "Ir al supermercado", "isCompleted": true },
-  { "id": 3, "description": "Sacar la basura", "isCompleted": false },
-  { "id": 4, "description": "Lavar la loza", "isCompleted": true },
-  { "id": 5, "description": "Hacer el almuerzo", "isCompleted": false },
-  { "id": 6, "description": "Lavar la ropa", "isCompleted": true },
-  { "id": 7, "description": "Descongelar la carne", "isCompleted": false },
-  { "id": 8, "description": "Lavar el carro", "isCompleted": true },
-  { "id": 9, "description": "Tender la cama", "isCompleted": false },
-  { "id": 10, "description": "Ir a clases de ingles", "isCompleted": false }
+  {
+    "id": 1,
+    "name": "Hacer el desayuno",
+    "description": null,
+    "isCompleted": false
+  },
+  {
+    "id": 2,
+    "name": "Ir al supermercado",
+    "description": null,
+    "isCompleted": true
+  },
+  {
+    "id": 3,
+    "name": "Sacar la basura",
+    "description": null,
+    "isCompleted": false
+  },
+  {
+    "id": 4,
+    "name": "Lavar la loza",
+    "description": null,
+    "isCompleted": true
+  },
+  {
+    "id": 5,
+    "name": "Hacer el almuerzo",
+    "description": null,
+    "isCompleted": false
+  },
+  {
+    "id": 6,
+    "name": "Lavar la ropa",
+    "description": null,
+    "isCompleted": true
+  },
+  {
+    "id": 7,
+    "name": "Descongelar la carne",
+    "description": null,
+    "isCompleted": false
+  },
+  {
+    "id": 8,
+    "name": "Lavar el carro",
+    "description": null,
+    "isCompleted": true
+  },
+  {
+    "id": 9,
+    "name": "Tender la cama",
+    "description": null,
+    "isCompleted": false
+  },
+  {
+    "id": 10,
+    "name": "Ir a clases de ingles",
+    "description": null,
+    "isCompleted": false
+  }
 ]

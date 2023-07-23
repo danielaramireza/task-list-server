@@ -22,8 +22,8 @@ router.use(validatePOSTRequestNoBody);
 // Middleware de validación para solicitudes POST que tengan información no valida o atributos faltantes para crear las tareas
 const validatePOSTRequestInvalid = function (req, res, next) {
   if (
-    (req.method === "POST" && "description" in req.body === false) ||
-    (req.method === "POST" && typeof req.body.description !== "string")
+    (req.method === "POST" && "name" in req.body === false) ||
+    (req.method === "POST" && typeof req.body.name !== "string")
   ) {
     return res.status(400).send({
       success: false,
@@ -53,14 +53,29 @@ router.use(validatePUTRequestNoBody);
 
 // Middleware de validación para solicitudes PUT que tengan información no valida o atributos faltantes para crear las tareas
 const validatePUTRequestInvalid = function (req, res, next) {
-  if (
-    (req.method === "PUT" && "description" in req.body === false) ||
-    (req.method === "PUT" && typeof req.body.description !== "string")
-  ) {
+  const { name, isCompleted } = req.body;
+
+  if (req.method === "PUT" && !name && isCompleted === undefined) {
     return res.status(400).send({
       success: false,
       content:
-        "Verifica la informacion enviada en el cuerpo. Recuerda que la descripcion es obligatoria y esta debe ser de tipo 'string'",
+        "Debes enviar al menos uno de los parámetros: name o isCompleted.",
+    });
+  }
+
+  if (name && typeof name !== "string") {
+    return res.status(400).send({
+      success: false,
+      content:
+        "El parámetro name debe ser un string si está presente en la solicitud.",
+    });
+  }
+
+  if (isCompleted !== undefined && typeof isCompleted !== "boolean") {
+    return res.status(400).send({
+      success: false,
+      content:
+        "El parámetro isCompleted debe ser un booleano si está presente en la solicitud.",
     });
   }
   next();
@@ -95,10 +110,11 @@ function eliminarTarea(id) {
 
 router.post("/nueva", (req, res) => {
   const tarea = req.body;
-  if (tarea.description) {
+  if (tarea.name) {
     let nuevaTarea = {
       id: retornarUltimoId(),
-      description: tarea.description,
+      name: tarea.name,
+      description: tarea.description ? tarea.description : null,
       isCompleted: false,
     };
     listaTareas.push(nuevaTarea);
@@ -136,6 +152,9 @@ router.put("/actualizar/:id", (req, res) => {
   const tarea = listaTareas.find((tarea) => tarea.id == id);
 
   if (tarea) {
+    if (tareaBody.name) {
+      tarea.name = tareaBody.name;
+    }
     if (tareaBody.description) {
       tarea.description = tareaBody.description;
     }
