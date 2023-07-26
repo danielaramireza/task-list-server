@@ -174,7 +174,6 @@ router.put("/actualizar/:id", (req, res) => {
     tareaBody?.isCompleted !== null ? tareaBody?.isCompleted : null
   )
     .then((response) => {
-      console.log(response);
       res.send({
         success: true,
         content: "Su tarea ha sido actualizada correctamente",
