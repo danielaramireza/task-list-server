@@ -1,5 +1,11 @@
 const express = require("express");
 const router = express.Router();
+const {
+  db_createTask,
+  db_findMaxId,
+  db_deleteTask,
+  db_updateTask,
+} = require("./db_fns");
 
 router.use(express.json());
 
@@ -85,14 +91,10 @@ const validatePUTRequestInvalid = function (req, res, next) {
 router.use(validatePUTRequestInvalid);
 
 //Función para retornar el último id
-function retornarUltimoId() {
-  const ultimoId = listaTareas.reduce((max, objeto) => {
-    if (objeto.id > max) {
-      return objeto.id;
-    }
-    return max;
-  }, 0);
-  return ultimoId + 1;
+async function retornarUltimoId() {
+  let ultimoId = 1;
+  ultimoId = await db_findMaxId("64b4165c1d224c057285566c");
+  return ultimoId;
 }
 
 //Función para eliminar una tarea(objeto) existente de la lista(array)
@@ -108,20 +110,26 @@ function eliminarTarea(id) {
   }
 }
 
-router.post("/nueva", (req, res) => {
+router.post("/nueva", async (req, res) => {
   const tarea = req.body;
   if (tarea.name) {
-    let nuevaTarea = {
-      id: retornarUltimoId(),
-      name: tarea.name,
-      description: tarea.description ? tarea.description : null,
-      isCompleted: false,
-    };
-    listaTareas.push(nuevaTarea);
-    res.send({
-      success: true,
-      content: "Se agrego una nueva tarea a la lista",
-    });
+    db_createTask(
+      await retornarUltimoId(),
+      tarea.name,
+      tarea.description ? tarea.description : null
+    )
+      .then(() => {
+        res.send({
+          success: true,
+          content: "Se agrego una nueva tarea a la lista.",
+        });
+      })
+      .catch(() => {
+        res.send({
+          success: false,
+          content: "Ocurrió un error agregando la tarea.",
+        });
+      });
   } else {
     res.status(400).send({
       success: false,
@@ -131,46 +139,53 @@ router.post("/nueva", (req, res) => {
 });
 
 router.delete("/eliminar/:id", (req, res) => {
-  const id = req.params.id;
-  let tareaEliminada = eliminarTarea(id);
-  if (tareaEliminada === true) {
-    res.send({
-      success: true,
-      content: "La tarea ha sido eliminada",
+  const id = parseInt(req.params.id);
+  db_deleteTask(id, "64b4165c1d224c057285566c")
+    .then((response) => {
+      if (response && response === 1) {
+        res.send({
+          success: true,
+          content: "La tarea ha sido eliminada",
+        });
+      } else {
+        res.status(400).send({
+          succes: false,
+          content: "Ocurrió un error eliminando la tarea, por favor verifique.",
+        });
+      }
+    })
+    .catch(() => {
+      res.status(404).send({
+        succes: false,
+        content: "La tarea no pudo ser eliminada, verifica el id de la tarea",
+      });
     });
-  } else {
-    res.status(404).send({
-      succes: false,
-      content: "La tarea no pudo ser eliminada, verifica el id de la tarea",
-    });
-  }
 });
 
 router.put("/actualizar/:id", (req, res) => {
-  const id = req.params.id;
+  const id = parseInt(req.params.id);
   const tareaBody = req.body;
-  const tarea = listaTareas.find((tarea) => tarea.id == id);
 
-  if (tarea) {
-    if (tareaBody.name) {
-      tarea.name = tareaBody.name;
-    }
-    if (tareaBody.description) {
-      tarea.description = tareaBody.description;
-    }
-    if (tareaBody.isCompleted === true || tareaBody.isCompleted === false) {
-      tarea.isCompleted = tareaBody.isCompleted;
-    }
-    res.send({
-      success: true,
-      content: "Su tarea ha sido actualizada correctamente",
+  db_updateTask(
+    id,
+    "64b4165c1d224c057285566c",
+    tareaBody?.name ? tareaBody?.name : null,
+    tareaBody?.description ? tareaBody?.description : null,
+    tareaBody?.isCompleted !== null ? tareaBody?.isCompleted : null
+  )
+    .then((response) => {
+      console.log(response);
+      res.send({
+        success: true,
+        content: "Su tarea ha sido actualizada correctamente",
+      });
+    })
+    .catch(() => {
+      res.status(404).send({
+        success: false,
+        content: "No se pudo actualizar la tarea, verifica los datos enviados.",
+      });
     });
-  } else {
-    res.status(404).send({
-      success: false,
-      content: "No se pudo actualizar la tarea, verifica los datos enviados.",
-    });
-  }
 });
 
 module.exports = router;

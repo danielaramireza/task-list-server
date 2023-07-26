@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const TaskModel = mongoose.model(
   "Task",
-  mongoose.Schema({
+  new mongoose.Schema({
     id: Number,
     name: String,
     description: String,

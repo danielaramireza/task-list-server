@@ -8,6 +8,7 @@ const cors = require("cors");
 const listViewRouter = require("./list-view-router");
 const listEditRouter = require("./list-edit-router");
 const listaTareas = require("./listaTareas.json");
+const { db_allTasks } = require("./db_fns");
 
 app.use(cors());
 
@@ -60,10 +61,27 @@ app.use(function (req, res, next) {
 });
 
 app.get("/", JWTValidation, (req, res) => {
-  res.send({
-    success: true,
-    content: listaTareas,
-  });
+  db_allTasks()
+    .then((response) => {
+      const listaTareasBD = response.map((el) => {
+        return {
+          id: el.id,
+          name: el.name,
+          description: el.description ? el.description : "",
+          isCompleted: el.state,
+        };
+      });
+      res.send({
+        success: true,
+        content: listaTareasBD,
+      });
+    })
+    .catch((err) => {
+      res.send({
+        success: false,
+        content: "Ocurrio un error consultando las tareas.",
+      });
+    });
 });
 
 app.post("/login", (req, res) => {
